@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.11.7",
+    "@mui/styled-engine-sc": "^5.11.0",
     "@splinetool/react-spline": "^2.2.5",
     "@splinetool/runtime": "^0.9.149",
     "@tailwindcss/aspect-ratio": "^0.4.2",
@@ -19,6 +23,7 @@
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.3",
     "firebase": "^9.17.1",
+    "net": "^1.0.2",
     "next": "13.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -26,6 +31,8 @@
     "react-reveal": "^1.2.2",
     "react-scroll": "^1.8.8",
     "react-social-icons": "^5.15.0",
+    "styled-components": "^5.3.6",
+    "twilio": "^3.84.1",
     "typescript": "4.8.4"
   },
   "devDependencies": {
