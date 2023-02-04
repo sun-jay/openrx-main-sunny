@@ -16,20 +16,6 @@ const Prescriptions = (props) => {
     Frequency: "",
     Notes: "",
   });
-  function sendMessage() {
-    const accountSid = "AC971b46da425981ef44c71b008a21c483";
-    const authToken = "1db655ffb95e8fddcfd1d5ffbff0ff18";
-    const client = require("twilio")(accountSid, authToken);
-
-    client.messages
-      .create({
-        body: "Test",
-        messagingServiceSid: "MGfadd168ed75c12c2c2a2e932913dd5dd",
-        to: "+19255585837",
-      })
-      .then((message) => console.log(message.sid))
-      .done();
-  }
 
   return (
     <div className="w-full h-screen overflow-hidden">
