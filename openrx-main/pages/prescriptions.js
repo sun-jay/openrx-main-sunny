@@ -8,19 +8,24 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebase/clientApp";
 
-const Prescriptions = (props) => {
+const randomstring = require("randomstring");
+
+const Prescriptions = (props, data) => {
   const [curMed, setCurMed] = useState(0);
   const [inp, setInp] = useState({
     Name: "",
     Dosage: "",
     Frequency: "",
     Notes: "",
+    FilePath: "",
   });
 
   return (
     <div className="w-full h-screen overflow-hidden">
       <Projects_Header />
-      {/* <p onClick={() => sendMessage()}>TEST MESSAGE</p> */}
+      <button className="p-5 bg-white" onClick={() => console.log(data)}>
+        TEST
+      </button>
       <div className="flex-row flex flex-auto w-full h-full border-t-2">
         <MedList curMed={curMed} setCurMed={setCurMed} props={props} />
 
@@ -52,6 +57,15 @@ const Prescriptions = (props) => {
     </div>
   );
 };
+
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const res = await fetch(`https://api.kanye.rest/`);
+  const data = await res.json();
+  console.log(data);
+  // Pass data to the page via props
+  return { props: { data } };
+}
 
 const ManualOrImage = ({ inp, setInp, curMed, setCurMed, props }) => {
   const [uploadType, setUploadType] = useState("manual");
@@ -91,7 +105,12 @@ const ManualOrImage = ({ inp, setInp, curMed, setCurMed, props }) => {
           props={props}
         />
       ) : (
-        <Upload />
+        <Upload
+          props={props}
+          curMed={curMed}
+          setInp={setInp}
+          setCurMed={setCurMed}
+        />
       )}
     </div>
   );
@@ -234,7 +253,7 @@ const MedList = ({ curMed, setCurMed, props }) => {
             className={
               item.Name === curMed.Name
                 ? "border-b-2 bg-gray-600 ease-in duration-300"
-                : "hover:bg-gray-700 border-b linear duration-100"
+                : "hover:bg-gray-700  border-b linear duration-100"
             }
           >
             <div className="flex items-center justify-between p-4  ">
@@ -282,7 +301,13 @@ const MedList = ({ curMed, setCurMed, props }) => {
   );
 };
 
-const Upload = () => {
+const Upload = ({ props, setCurMed, setInp }) => {
+  var handleReset = () => {
+    Array.from(document.querySelectorAll("input")).forEach(
+      (input) => (input.value = "")
+    );
+  };
+
   // State to store uploaded file
   const [file, setFile] = useState("");
 
@@ -321,8 +346,20 @@ const Upload = () => {
     if (!file) {
       alert("Please upload an image first!");
     }
-
-    const storageRef = ref(storage, `/files/${file.name}`);
+    var filePath = "/files/" + randomstring.generate() + ".jpeg";
+    const storageRef = ref(storage, filePath);
+    var inp = {
+      Name: "",
+      Dosage: "",
+      Frequency: "",
+      Notes: "",
+      FilePath: filePath,
+    };
+    props.addPrescription(inp).then(() => {
+      setCurMed(inp);
+      handleReset();
+      setInp("");
+    });
 
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.
