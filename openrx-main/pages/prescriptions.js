@@ -7,10 +7,11 @@ import { GrFormTrash } from "react-icons/gr";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebase/clientApp";
+import { get } from "http";
 
 const randomstring = require("randomstring");
 
-const Prescriptions = (props, data) => {
+const Prescriptions = (props) => {
   const [curMed, setCurMed] = useState(0);
   const [inp, setInp] = useState({
     Name: "",
@@ -22,10 +23,8 @@ const Prescriptions = (props, data) => {
 
   return (
     <div className="w-full h-screen overflow-hidden">
-      <Projects_Header />
-      <button className="p-5 bg-white" onClick={() => console.log(data)}>
-        TEST
-      </button>
+      {/* <Projects_Header /> */}
+
       <div className="flex-row flex flex-auto w-full h-full border-t-2">
         <MedList curMed={curMed} setCurMed={setCurMed} props={props} />
 
@@ -57,15 +56,6 @@ const Prescriptions = (props, data) => {
     </div>
   );
 };
-
-export async function getServerSideProps() {
-  // Fetch data from external API
-  const res = await fetch(`https://api.kanye.rest/`);
-  const data = await res.json();
-  console.log(data);
-  // Pass data to the page via props
-  return { props: { data } };
-}
 
 const ManualOrImage = ({ inp, setInp, curMed, setCurMed, props }) => {
   const [uploadType, setUploadType] = useState("manual");
@@ -118,13 +108,18 @@ const ManualOrImage = ({ inp, setInp, curMed, setCurMed, props }) => {
 
 const DisplayMed = ({ curMed }) => {
   return (
-    <div className="w-full">
+    <div className="w-full text-left ">
       <div>
-        <div className="text-5xl p-24 text-white">
+        <div className="text-6xl underline font-semibold p-10 text-white">
           {" "}
-          Medication: {curMed.Name}
+          {curMed.Name}
         </div>
-        <div className="text-5xl p-24 text-white">
+        {curMed.filePath ? (
+          <img src={curMed.filePath} className="rounded-xl w-3/12 m-10" />
+        ) : (
+          <div></div>
+        )}
+        <div className="text-5xl p-10 text-white">
           Dosage:{" "}
           {curMed.Dosage == "1"
             ? curMed.Dosage + " Pill"
@@ -133,7 +128,6 @@ const DisplayMed = ({ curMed }) => {
             : "No Information"}
         </div>
       </div>
-      ;
     </div>
   );
 };
@@ -311,6 +305,9 @@ const Upload = ({ props, setCurMed, setInp }) => {
   // State to store uploaded file
   const [file, setFile] = useState("");
 
+  const [data, setData] = useState();
+  const [imageUrl, setImageUrl] = useState();
+
   // progress
   const [percent, setPercent] = useState(0);
 
@@ -348,23 +345,11 @@ const Upload = ({ props, setCurMed, setInp }) => {
     }
     var filePath = "/files/" + randomstring.generate() + ".jpeg";
     const storageRef = ref(storage, filePath);
-    var inp = {
-      Name: "",
-      Dosage: "",
-      Frequency: "",
-      Notes: "",
-      FilePath: filePath,
-    };
-    props.addPrescription(inp).then(() => {
-      setCurMed(inp);
-      handleReset();
-      setInp("");
-    });
 
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.
     const uploadTask = uploadBytesResumable(storageRef, file);
-
+    var urlPromise;
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -380,9 +365,46 @@ const Upload = ({ props, setCurMed, setInp }) => {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
           console.log(url);
+          const response = fetch("/api/img_parse", {
+            method: "POST",
+            body: url,
+          });
+          response.then((response) => {
+            response.json().then((json) => {
+              json = JSON.parse(json);
+              console.log(json);
+
+              var inp = {
+                Name: json["Name of Drug(short name)"],
+                Dosage: json["how many to take in a dose"],
+                Frequency: json["how many doses to take in a day"],
+                Notes:
+                  json["any extra notes such as take by mouth or with food"],
+                filePath: url,
+              };
+              props.addPrescription(inp).then(() => {
+                setCurMed(inp);
+                handleReset();
+                setInp("");
+              });
+            });
+          });
         });
+        // .then((json) => {
+        //   console.log("DATA:" + json);
+        // });
       }
     );
+    async function fetchData() {
+      const response = await fetch("/api/img_parse", {
+        method: "POST",
+        body: imageUrl,
+      });
+      const json = await response.json();
+      return json;
+    }
+    fetchData();
+    console.log(data);
   };
   return (
     <div className="p-24 text-white">

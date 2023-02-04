@@ -27,42 +27,39 @@ const Navbar = (props) => {
   }, []);
 
   return (
-    <div
-      style={{ backgroundColor: `${color}` }}
-      className="fixed  left-0 top-0 w-full z-20 ease-in duration-200 "
-    >
-      <div className=" m-auto flex md:justify-between justify-between items-center p-4 text-white">
-        <Link className="md:block hidden " href="/">
-          <h1 style={{ color: `${textColor}` }} className="text-4xl">
-            Medication
+    <div style={{ backgroundColor: `${color}` }} className="">
+      <div
+        className="flex flex-row justify-between text-xl"
+        style={{ color: `${textColor}` }}
+      >
+        <Link className="p-10 px-10 inline-block" href="/">
+          <h1
+            style={{ color: `${textColor}` }}
+            className="text-4xl font-semibold "
+          >
+            OpenRx
           </h1>
         </Link>
-        <ul
-          style={{ color: `${textColor}` }}
-          className="hidden md:flex items-center"
-        >
+        <div className="">
           {props.user ? (
-            <li className="p-4">
-              <button
-                onClick={props.signOut}
-                className="text-white  py-2 px-4 "
-              >
+            <div className="inline-block p-12">
+              <button onClick={props.signOut} className="">
                 Sign Out
               </button>
-            </li>
+            </div>
           ) : (
-            <li className="p-4">
-              <button onClick={props.signIn} className="text-white py-2 px-4 ">
-                Sign In With Google
+            <div className="inline-block p-12 font-semibold">
+              <button onClick={props.signIn} className="">
+                Sign In
               </button>
-            </li>
+            </div>
           )}
 
-          <li
+          <div
             className={
               cur === "Home"
-                ? "px-3 py-2 	mx-1 ease-in duration-100 bg-red-300 rounded-full"
-                : "px-3 py-2 mx-1 ease-in duration-100"
+                ? " my-5 py-3 px-8 inline-block bg-red-300 rounded-xl inline-block"
+                : "p-8 inline-block"
             }
           >
             <Link
@@ -74,12 +71,12 @@ const Navbar = (props) => {
             >
               Home
             </Link>
-          </li>
-          <li
+          </div>
+          <div
             className={
               cur === "Prescriptions"
-                ? "px-3 py-2  mx-1	ease-in duration-100 bg-red-300 rounded-full"
-                : "px-3 py-2 mx-1 ease-in duration-100"
+                ? "my-5 py-3 px-6 mx-2 bg-red-300 rounded-xl inline-block"
+                : "p-8 inline-block"
             }
           >
             <Link
@@ -91,76 +88,14 @@ const Navbar = (props) => {
             >
               My Prescriptions
             </Link>
-          </li>
-          {/* <li className="p-4">
+          </div>
+        </div>
+        {/* <li className="p-4">
             <Link href="/work">Work</Link>
           </li>
           <li className="p-4">
             <Link href="/contact">Contact</Link>
           </li> */}
-        </ul>
-        <div className="block md:hidden">Medication</div>
-        <div onClick={handleNav} className="block md:hidden z-10">
-          {nav ? (
-            <AiOutlineClose
-              size={20}
-              style={{ color: nav ? "#ffffff" : `${textColor}` }}
-            />
-          ) : (
-            <AiOutlineMenu size={20} style={{ color: `${textColor}` }} />
-          )}
-        </div>
-        {/* mobile */}
-        <div
-          className={
-            nav
-              ? "md:hidden absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center w-full h-screen bg-black text-center ease-in duration-200"
-              : "md:hidden absolute top-0 left-[-100%] right-0 bottom-0 flex justify-center items-center w-full h-screen bg-black text-center ease-in duration-200"
-          }
-        >
-          <ul>
-            <li
-              className={
-                cur === "Home"
-                  ? "font-bold p-4 text-4xl hover:text-gray-500"
-                  : "p-4 text-4xl hover:text-gray-500"
-              }
-            >
-              <Link
-                onClick={() => {
-                  handleNav();
-                  setCur("Home");
-                }}
-                href="/"
-              >
-                Home
-              </Link>
-            </li>
-            <li
-              className={
-                cur === "Prescriptions"
-                  ? "font-bold p-4 text-4xl hover:text-gray-500"
-                  : "p-4 text-4xl hover:text-gray-500"
-              }
-            >
-              <Link
-                onClick={() => {
-                  handleNav();
-                  setCur("Prescriptions");
-                }}
-                href="/Prescriptions"
-              >
-                Prescriptions
-              </Link>
-            </li>
-            {/* <li className="p-4 text-4xl hover:text-gray-500">
-              <Link href="/work">Work</Link>
-            </li>
-            <li className="p-4 text-4xl hover:text-gray-500">
-              <Link href="/contact">Contact</Link>
-            </li> */}
-          </ul>
-        </div>
       </div>
     </div>
   );

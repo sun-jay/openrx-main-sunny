@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/cognitiveservices-computervision": "^8.2.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.11.7",
@@ -20,12 +21,14 @@
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
     "@vercel/analytics": "^0.1.6",
+    "async": "^3.2.4",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.3",
     "express": "^4.18.2",
     "firebase": "^9.17.1",
     "net": "^1.0.2",
     "next": "13.0.3",
+    "openai": "^3.1.0",
     "randomstring": "^1.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
