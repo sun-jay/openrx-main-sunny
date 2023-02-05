@@ -157,10 +157,10 @@ const DisplayMed = ({ curMed }) => {
                   ? curMed.Dosage + " Pills"
                   : "No Information"}
               </div>
-              <div className="text-xl   text-white inline-block">
+              <div className="text-xl  my-10 text-white inline-block">
                 Frequency: {curMed.Frequency} a Day
               </div>
-              <div className="text-xl   text-white inline-block">
+              <div className="text-xl  my-10 text-white inline-block">
                 Notes: {curMed.Notes}
               </div>
             </div>
@@ -348,6 +348,14 @@ const MedList = ({ curMed, setCurMed, props }) => {
             </div>
           </div>
         ))}
+        <div>
+          <button
+            onSubmit={() => console.log("Button Pressed!")}
+            className="py-8 px-5 text-lg text-left bg-gray-600 hover:bg-gray-700 w-full "
+          >
+            Submit Medications for Mailing
+          </button>
+        </div>
       </div>
     </div>
   );
