@@ -499,8 +499,9 @@ const MedList = ({ curMed, setCurMed, props }) => {
             />
           </div>
         </div>
-        {props.FBuser.prescriptions?.map((item) => (
+        {props.FBuser.prescriptions?.map((item,index) => (
           <div
+            key={index}
             onClick={() => setCurMed(item)}
             className={
               item.Name === curMed.Name
@@ -602,8 +603,9 @@ const MedListMob = ({ curMed, setCurMed, props }) => {
             />
           </div>
         </div>
-        {props.FBuser.prescriptions?.map((item) => (
+        {props.FBuser.prescriptions?.map((item,index) => (
           <div
+            key={index}
             onClick={() => setCurMed(item)}
             className={
               item.Name === curMed.Name
