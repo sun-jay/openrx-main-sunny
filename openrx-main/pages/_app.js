@@ -21,6 +21,15 @@ export default function App({ Component, pageProps }) {
     auth.signOut();
     setFBuser("base");
   };
+  const sendTwilio = async (perscription) => {
+    const res = await fetch("/api/twilio", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: perscription,
+    });
+  }
 
   // delete spesific prescription from FBuser.prescriptions, get new users from FB to update state
   async function deletePrescription(prescription) {
@@ -131,6 +140,7 @@ export default function App({ Component, pageProps }) {
       />
       <Component
         {...pageProps}
+        sendTwilio={sendTwilio}
         db={db}
         user={user}
         handleLoad={handleLoad}

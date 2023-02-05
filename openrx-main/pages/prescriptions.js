@@ -20,6 +20,7 @@ const Prescriptions = (props) => {
     setList(!list)
   }
 
+
   const [inp, setInp] = useState({
     Name: "",
     Dosage: "",
@@ -514,7 +515,8 @@ const MedList = ({ curMed, setCurMed, props }) => {
                   {item.Name}
                 </strong>
                 <span className="text-black-500 text-sm font-medium">
-                  Medication
+                  <button onClick = {()=>{(props.sendTwilio())
+                  console.log(item.Name)}}>Remind Me</button>
                 </span>
               </div>
 
@@ -616,7 +618,9 @@ const MedListMob = ({ curMed, setCurMed, props }) => {
                   {item.Name}
                 </strong>
                 <span className="text-black-500 text-sm font-medium">
-                  Medication
+                  <button onClick = {()=>{(props.sendTwilio())
+                  console.log(item.Name)}
+                  }>Remind Me</button>
                 </span>
               </div>
 
