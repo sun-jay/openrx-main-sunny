@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     prompt:
       "Heres text from a drug label: " +
       raw_txt +
-      'Return the data in this form: {"Name of Drug(short name)": return a string, "how many to take in a dose": return only int or ?, "how many doses to take in a day": return only int or ?, "any extra notes such as take by mouth or with food": return a string}',
+      'Return the data in this form: {"Name of Drug(short name)": return a string, "how many to take in a dose": return only int or "?", "how many doses to take in a day": return only int or "?", "any extra notes such as take by mouth or with food": return a string}',
     max_tokens: 300,
     temperature: 0.1,
   });

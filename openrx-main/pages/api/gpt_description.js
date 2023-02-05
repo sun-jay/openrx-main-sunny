@@ -4,7 +4,7 @@ export default async function handler(req, res) {
 
   const { Configuration, OpenAIApi } = require("openai");
   const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: process.env.NEXT_PUBLIC_GPT_KEY,
   });
   const openai = new OpenAIApi(configuration);
   const response = await openai.createCompletion({
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     prompt:
       "Return information about " +
       medication +
-      '"in this form: {Description/what it treats": string,"side effects":string}',
+      'in this form: {"Description/what it treats": string,"side effects":string}',
     max_tokens: 200,
     temperature: 0,
   });

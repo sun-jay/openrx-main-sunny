@@ -725,16 +725,18 @@ const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
           });
           response.then((response) => {
             response.json().then((json) => {
+              console.log("JSON: ",  json);
+
               json = JSON.parse(json);
-              console.log("JSON: " + json);
+              // console.log("JSON: " + json);
               const desc = fetch("/api/gpt_description", {
                 method: "POST",
                 body: json["Name of Drug(short name)"],
               });
               desc.then((desc) => {
                 desc.json().then((desc) => {
-                  desc = JSON.parse(desc);
                   console.log("DESCRPTION", desc);
+                  desc = JSON.parse(desc);
                   var inp = {
                     Name: json["Name of Drug(short name)"],
                     Dosage: json["how many to take in a dose"],
