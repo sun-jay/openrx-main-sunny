@@ -13,6 +13,8 @@ const randomstring = require("randomstring");
 
 const Prescriptions = (props) => {
   const [curMed, setCurMed] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const [inp, setInp] = useState({
     Name: "",
     Dosage: "",
@@ -24,7 +26,6 @@ const Prescriptions = (props) => {
   return (
     <div className="w-full h-screen overflow-hidden">
       {/* <Projects_Header /> */}
-
       <div className="flex-row flex flex-auto w-full h-full border-t-2">
         <MedList curMed={curMed} setCurMed={setCurMed} props={props} />
 
@@ -35,13 +36,27 @@ const Prescriptions = (props) => {
             {/* if curMed = "AddPrescrption", render a input field that when submitted calls a function that adds a new user in
                      firebase */}
 
-            {curMed === "AddPrescription" ? (
+            {loading === true ? (
+              <div className="flex items-center justify-center text-red-300 w-full h-full">
+                <div>
+                  <div class="lds-heart">
+                    <div></div>
+                  </div>
+                  <div className="text-3xl font-semibold text-red-300">
+                    Reading Text . . . Collecting Data . . . Retrieving
+                    Information . . .{" "}
+                  </div>
+                </div>
+              </div>
+            ) : curMed === "AddPrescription" ? (
               <ManualOrImage
                 inp={inp}
                 setInp={setInp}
                 curMed={curMed}
                 setCurMed={setCurMed}
                 props={props}
+                loading={loading}
+                setLoading={setLoading}
               />
             ) : (
               <>
@@ -57,7 +72,15 @@ const Prescriptions = (props) => {
   );
 };
 
-const ManualOrImage = ({ inp, setInp, curMed, setCurMed, props }) => {
+const ManualOrImage = ({
+  inp,
+  setInp,
+  curMed,
+  setCurMed,
+  props,
+  loading,
+  setLoading,
+}) => {
   const [uploadType, setUploadType] = useState("manual");
 
   return (
@@ -93,6 +116,8 @@ const ManualOrImage = ({ inp, setInp, curMed, setCurMed, props }) => {
           curMed={curMed}
           setCurMed={setCurMed}
           props={props}
+          loading={loading}
+          setLoading={setLoading}
         />
       ) : (
         <Upload
@@ -100,6 +125,8 @@ const ManualOrImage = ({ inp, setInp, curMed, setCurMed, props }) => {
           curMed={curMed}
           setInp={setInp}
           setCurMed={setCurMed}
+          loading={loading}
+          setLoading={setLoading}
         />
       )}
     </div>
@@ -110,27 +137,51 @@ const DisplayMed = ({ curMed }) => {
   return (
     <div className="w-full text-left ">
       <div>
-        <div className="text-6xl border-b-2 border-gray-500  tracking-wide  mx-8 p-10 text-white">
+        <div className="text-6xl border-b-2 border-gray-500 tracking-wide  mx-8 p-10 text-white">
           {" "}
           {curMed.Name}
         </div>
-        <div className="flex border-b-2  h-full mx-8 border-gray-500 ">
-          {curMed.filePath ? (
-            <img src={curMed.filePath} className="rounded-xl w-3/12 m-10" />
-          ) : (
-            <div></div>
-          )}
-          <div className="flex flex-col mx-10 justify-center my-8">
-            <div className="text-3xl p-10 text-white">
-              Dosage:{" "}
-              {curMed.Dosage == "1"
-                ? curMed.Dosage + " Pill"
-                : curMed.Dosage
-                ? curMed.Dosage + " Pills"
-                : "No Information"}
+        <div>
+          <div className="flex border-b-2 flex-row  h-full mx-8 border-gray-500 ">
+            {curMed.filePath ? (
+              <img src={curMed.filePath} className="rounded-xl w-3/12 m-10" />
+            ) : (
+              <div></div>
+            )}
+            <div className="flex flex-col pr-5 w-8/12  my-8">
+              <div className="text-xl my-10 text-white">
+                Dosage:{" "}
+                {curMed.Dosage == "1"
+                  ? curMed.Dosage + " Pill"
+                  : curMed.Dosage
+                  ? curMed.Dosage + " Pills"
+                  : "No Information"}
+              </div>
+              <div className="text-xl   text-white inline-block">
+                Frequency: {curMed.Frequency} a Day
+              </div>
+              <div className="text-xl   text-white inline-block">
+                Notes: {curMed.Notes}
+              </div>
             </div>
-            <div className="text-3xl  p-10 text-white">
-              Frequency: {curMed.Frequency} a day
+            <div className="text-white p-5 border-l-2 border-gray-500">
+              {curMed.Description ? (
+                <div>
+                  <h3 className="text-xl font-semibold ">Description</h3>
+                  <p className="pb-4">
+                    {
+                      JSON.parse(curMed.Description)[
+                        "Description/what it treats"
+                      ]
+                    }
+                  </p>
+                  <h3 className="text-xl font-semibold ">Side Effects</h3>
+                  <p>{JSON.parse(curMed.Description)["Side effects"]}</p>
+                </div>
+              ) : (
+                <p></p>
+              )}
+              <p></p>
             </div>
           </div>
         </div>
@@ -179,7 +230,7 @@ const AddMedManual = ({ inp, setInp, curMed, setCurMed, props }) => {
           {/* MAKE IT ADD JUST A STRING FOR NOWs */}
           <div>
             <button
-              className="text-white border-4 font-bold rounded-lg p-4 m-10 hover:bg-gray-800"
+              className="text-white border-4 font-bold rounded-lg p-4 m-10 hover:bg-red-300"
               onClick={() => {
                 props.addPrescription(inp).then(() => {
                   setCurMed(inp);
@@ -253,8 +304,8 @@ const MedList = ({ curMed, setCurMed, props }) => {
             onClick={() => setCurMed(item)}
             className={
               item.Name === curMed.Name
-                ? "border-b-2 bg-gray-600 ease-in duration-300"
-                : "hover:bg-gray-700  border-b linear duration-100"
+                ? " border-b-2 bg-gray-600 ease-in duration-300 text-red-300"
+                : "hover:bg-gray-700  border-b linear duration-100 "
             }
           >
             <div className="flex items-center justify-between p-4  ">
@@ -287,7 +338,7 @@ const MedList = ({ curMed, setCurMed, props }) => {
                 <FaArrowCircleRight
                   className={
                     item.Name === curMed.Name
-                      ? "text-black ease-in duration-300 "
+                      ? "text-black ease-in duration-300  "
                       : "text-black ease-in duration-100 opacity-0 "
                   }
                   size={40}
@@ -302,7 +353,7 @@ const MedList = ({ curMed, setCurMed, props }) => {
   );
 };
 
-const Upload = ({ props, setCurMed, setInp }) => {
+const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
   var handleReset = () => {
     Array.from(document.querySelectorAll("input")).forEach(
       (input) => (input.value = "")
@@ -311,7 +362,6 @@ const Upload = ({ props, setCurMed, setInp }) => {
 
   // State to store uploaded file
   const [file, setFile] = useState("");
-
   const [data, setData] = useState();
   const [imageUrl, setImageUrl] = useState();
 
@@ -357,6 +407,7 @@ const Upload = ({ props, setCurMed, setInp }) => {
     // Receives the storage reference and the file to upload.
     const uploadTask = uploadBytesResumable(storageRef, file);
     var urlPromise;
+    setLoading(true);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -379,20 +430,33 @@ const Upload = ({ props, setCurMed, setInp }) => {
           response.then((response) => {
             response.json().then((json) => {
               json = JSON.parse(json);
-              console.log(json);
-
-              var inp = {
-                Name: json["Name of Drug(short name)"],
-                Dosage: json["how many to take in a dose"],
-                Frequency: json["how many doses to take in a day"],
-                Notes:
-                  json["any extra notes such as take by mouth or with food"],
-                filePath: url,
-              };
-              props.addPrescription(inp).then(() => {
-                setCurMed(inp);
-                handleReset();
-                setInp("");
+              console.log("JSON: " + json);
+              const desc = fetch("/api/gpt_description", {
+                method: "POST",
+                body: json["Name of Drug(short name)"],
+              });
+              desc.then((desc) => {
+                desc.json().then((desc) => {
+                  desc = JSON.parse(desc);
+                  console.log("DESCRPTION", desc);
+                  var inp = {
+                    Name: json["Name of Drug(short name)"],
+                    Dosage: json["how many to take in a dose"],
+                    Frequency: json["how many doses to take in a day"],
+                    Notes:
+                      json[
+                        "any extra notes such as take by mouth or with food"
+                      ],
+                    filePath: url,
+                    Description: JSON.stringify(desc),
+                  };
+                  props.addPrescription(inp).then(() => {
+                    setCurMed(inp);
+                    handleReset();
+                    setInp("");
+                    setLoading(false);
+                  });
+                });
               });
             });
           });
@@ -402,30 +466,24 @@ const Upload = ({ props, setCurMed, setInp }) => {
         // });
       }
     );
-    async function fetchData() {
-      const response = await fetch("/api/img_parse", {
-        method: "POST",
-        body: imageUrl,
-      });
-      const json = await response.json();
-      return json;
-    }
-    fetchData();
-    console.log(data);
   };
+
   return (
-    <div className="p-24 text-white">
-      <div>Upload</div>
-      <div>
+    <div className="">
+      <div className="flex-col flex mt-16 border-t-2 border-gray-500">
+        <p className="m-10 text-5xl">Upload Picture of Your Perscription</p>
         <input
           type="file"
           onChange={handleChange}
-          className="bg-black p-2"
+          className="m-auto border-2 text-xl border-gray-500 text-center rounded-lg p-5 "
         ></input>
-        <button onClick={handleUpload}>Upload to Firebase</button>
-        <p>{percent} "% done"</p>
+        <button
+          className=" bg-gray-900 mt-24 w-3/12 text-xl rounded-xl py-2 mx-auto hover:bg-red-300"
+          onClick={handleUpload}
+        >
+          Upload Image
+        </button>
       </div>
-      <img id="myimg" src="" alt="" />
     </div>
   );
 };
