@@ -110,22 +110,29 @@ const DisplayMed = ({ curMed }) => {
   return (
     <div className="w-full text-left ">
       <div>
-        <div className="text-6xl underline font-semibold p-10 text-white">
+        <div className="text-6xl border-b-2 border-gray-500  tracking-wide  mx-8 p-10 text-white">
           {" "}
           {curMed.Name}
         </div>
-        {curMed.filePath ? (
-          <img src={curMed.filePath} className="rounded-xl w-3/12 m-10" />
-        ) : (
-          <div></div>
-        )}
-        <div className="text-5xl p-10 text-white">
-          Dosage:{" "}
-          {curMed.Dosage == "1"
-            ? curMed.Dosage + " Pill"
-            : curMed.Dosage
-            ? curMed.Dosage + " Pills"
-            : "No Information"}
+        <div className="flex border-b-2  h-full mx-8 border-gray-500 ">
+          {curMed.filePath ? (
+            <img src={curMed.filePath} className="rounded-xl w-3/12 m-10" />
+          ) : (
+            <div></div>
+          )}
+          <div className="flex flex-col mx-10 justify-center my-8">
+            <div className="text-3xl p-10 text-white">
+              Dosage:{" "}
+              {curMed.Dosage == "1"
+                ? curMed.Dosage + " Pill"
+                : curMed.Dosage
+                ? curMed.Dosage + " Pills"
+                : "No Information"}
+            </div>
+            <div className="text-3xl  p-10 text-white">
+              Frequency: {curMed.Frequency} a day
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -410,7 +417,11 @@ const Upload = ({ props, setCurMed, setInp }) => {
     <div className="p-24 text-white">
       <div>Upload</div>
       <div>
-        <input type="file" onChange={handleChange} accept="" />
+        <input
+          type="file"
+          onChange={handleChange}
+          className="bg-black p-2"
+        ></input>
         <button onClick={handleUpload}>Upload to Firebase</button>
         <p>{percent} "% done"</p>
       </div>
