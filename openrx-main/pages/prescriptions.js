@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Projects_Header from "../components/Projects_Header";
 import { useState } from "react";
-import { FaArrowCircleRight } from "react-icons/fa";
+import { FaArrowCircleRight , FaArrowCircleLeft} from "react-icons/fa";
 import userServices from "../firebase/userServices";
 import { GrFormTrash } from "react-icons/gr";
 import { AiOutlinePlusCircle } from "react-icons/ai";
@@ -14,6 +14,11 @@ const randomstring = require("randomstring");
 const Prescriptions = (props) => {
   const [curMed, setCurMed] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [list, setList] = useState(true)
+
+  const handleList = () => {
+    setList(!list)
+  }
 
   const [inp, setInp] = useState({
     Name: "",
@@ -24,49 +29,95 @@ const Prescriptions = (props) => {
   });
 
   return (
-    <div className="w-full h-screen overflow-hidden">
-      {/* <Projects_Header /> */}
-      <div className="flex-row flex flex-auto w-full h-full border-t-2">
-        <MedList curMed={curMed} setCurMed={setCurMed} props={props} />
-
-        <div className=" h-screen w-8/12 inline-block bg-gray-700 ">
-          <div className="w-full inline text-center">
-            {/* get type of a var */}
-            {/* {JSON.stringify( props.FBuser.prescriptions)} */}
-            {/* if curMed = "AddPrescrption", render a input field that when submitted calls a function that adds a new user in
-                     firebase */}
-
-            {loading === true ? (
-              <div className="flex items-center justify-center text-red-300 w-full h-full">
-                <div>
-                  <div class="lds-heart">
-                    <div></div>
-                  </div>
-                  <div className="text-3xl font-semibold text-red-300">
-                    Reading Text . . . Collecting Data . . . Retrieving
-                    Information . . .{" "}
+    <div >
+      <div className=" hidden md:block w-full h-screen overflow-hidden">
+        {/* <Projects_Header /> */}
+        <div className="flex-row flex flex-auto w-full h-full border-t-2">
+          <MedList curMed={curMed} setCurMed={setCurMed} props={props} />
+          <div className=" h-screen w-8/12 inline-block bg-gray-700 ">
+            <div className="w-full inline text-center">
+              {/* get type of a var */}
+              {/* {JSON.stringify( props.FBuser.prescriptions)} */}
+              {/* if curMed = "AddPrescrption", render a input field that when submitted calls a function that adds a new user in
+                       firebase */}
+              {loading === true ? (
+                <div className="flex items-center justify-center text-red-300 w-full h-full">
+                  <div>
+                    <div class="lds-heart">
+                      <div></div>
+                    </div>
+                    <div className="text-3xl font-semibold text-red-300">
+                      Reading Text . . . Collecting Data . . . Retrieving
+                      Information . . .{" "}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : curMed === "AddPrescription" ? (
-              <ManualOrImage
-                inp={inp}
-                setInp={setInp}
-                curMed={curMed}
-                setCurMed={setCurMed}
-                props={props}
-                loading={loading}
-                setLoading={setLoading}
-              />
-            ) : (
-              <>
-                <DisplayMed curMed={curMed} />
-              </>
-            )}
-
-            {/* {inp.Name} */}
+              ) : curMed === "AddPrescription" ? (
+                <ManualOrImage
+                  inp={inp}
+                  setInp={setInp}
+                  curMed={curMed}
+                  setCurMed={setCurMed}
+                  props={props}
+                  loading={loading}
+                  setLoading={setLoading}
+                />
+              ) : (
+                <>
+                  <DisplayMed curMed={curMed} />
+                </>
+              )}
+              {/* {inp.Name} */}
+            </div>
           </div>
         </div>
+      </div>
+      {/* MOBILE VIEW */}
+      <div className=" md:hidden">
+        {/* create version of this page that fits on mobile */}
+        {/* <Projects_Header /> */}
+        <div className="flex-row flex flex-auto w-full h-full border-t-2">
+          <div onClick={() => handleList()} className={list?"absolute top-0 left-0 right-0 bottom-0 w-screen h-screen ease-in duration-200":"absolute top-0 left-[-100%] right-0 bottom-0 w-screen h-screen ease-in duration-200" }  >
+            <MedListMob curMed={curMed} setCurMed={setCurMed} props={props} />
+          </div>
+          <div className=" h-screen w-full inline-block bg-gray-700 ">
+            <div className="w-full inline text-center">
+              {/* get type of a var */}
+              {/* {JSON.stringify( props.FBuser.prescriptions)} */}
+              {/* if curMed = "AddPrescrption", render a input field that when submitted calls a function that adds a new user in
+                       firebase */}
+              {loading === true ? (
+                <div className="flex items-center justify-center text-red-300 w-full h-full">
+                  <div>
+                    <div class="lds-heart">
+                      <div></div>
+                    </div>
+                    <div className="text-3xl font-semibold text-red-300">
+                      Reading Text . . . Collecting Data . . . Retrieving
+                      Information . . .{" "}
+                    </div>
+                  </div>
+                </div>
+              ) : curMed === "AddPrescription" ? (
+                <ManualOrImage
+                  inp={inp}
+                  setInp={setInp}
+                  curMed={curMed}
+                  setCurMed={setCurMed}
+                  props={props}
+                  loading={loading}
+                  setLoading={setLoading}
+                />
+              ) : (
+                <>
+                  <DisplayMedMob curMed={curMed} handleList={handleList} />
+                </>
+              )}
+              {/* {inp.Name} */}
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
@@ -85,6 +136,70 @@ const ManualOrImage = ({
 
   return (
     <div className="flex-row flex-center text-white font-semibold text-lg ">
+      <div className="mt-10 mx-5 inline-block">
+        <button
+          className={
+            uploadType == "manual"
+              ? "border-2 bg-gray-900 px-16 py-5 rounded-xl"
+              : "border-2 px-16 py-5 rounded-xl"
+          }
+          onClick={() => setUploadType("manual")}
+        >
+          Manual Input
+        </button>
+      </div>
+      <div className="inline-block mx-5 mt-10">
+        <button
+          className={
+            uploadType == "image"
+              ? "border-2 bg-gray-900 px-16 py-5 rounded-xl"
+              : "border-2 px-16 py-5 rounded-xl"
+          }
+          onClick={() => setUploadType("image")}
+        >
+          Image Input
+        </button>
+      </div>
+      {uploadType === "manual" ? (
+        <AddMedManual
+          inp={inp}
+          setInp={setInp}
+          curMed={curMed}
+          setCurMed={setCurMed}
+          props={props}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      ) : (
+        <Upload
+          props={props}
+          curMed={curMed}
+          setInp={setInp}
+          setCurMed={setCurMed}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      )}
+    </div>
+  );
+};
+const ManualOrImageMob = ({
+  inp,
+  setInp,
+  curMed,
+  setCurMed,
+  props,
+  loading,
+  setLoading,
+}) => {
+  const [uploadType, setUploadType] = useState("manual");
+
+  return (
+    <div className="flex-row flex-center text-white font-semibold text-lg ">
+      <div>
+        <FaArrowCircleLeft 
+        size = {70}/>
+      </div>
       <div className="mt-10 mx-5 inline-block">
         <button
           className={
@@ -189,6 +304,76 @@ const DisplayMed = ({ curMed }) => {
     </div>
   );
 };
+const DisplayMedMob = ({ curMed, handleList }) => {
+  return (
+    // make a left arrow
+
+
+    <div className="w-full text-left ">
+      <div>
+        <div className="text-5xl border-b-2 border-gray-500 mx-auto p-10 text-center text-white">
+        <div className="flex justify-center items-center w-full">
+          <div className="px-2">
+            <FaArrowCircleLeft
+            onClick={() => {handleList()}}
+            size = {40}/>
+          </div>
+            <div className="px-2">{curMed.Name}</div>
+        </div>
+        </div>
+        <div>
+          <div className="flex border-b-2 flex-row  h-full mx-8 border-gray-500 ">
+            
+            <div className="flex flex-col pr-5 w-8/12  my-8">
+              <div className="text-xl my-4 text-white">
+                <p>Dosage:{" "}</p>
+                <p>
+                  {curMed.Dosage == "1"
+                    ? curMed.Dosage + " Pill"
+                    : curMed.Dosage
+                    ? curMed.Dosage + " Pills"
+                    : "No Information"}
+                </p>
+              </div>
+              <div className="text-xl my-4  text-white inline-block">
+                Frequency: {curMed.Frequency} a Day
+              </div>
+              <div className="text-xl my-4  text-white inline-block">
+                Notes: {curMed.Notes}
+              </div>
+            </div>
+            <div className="text-white p-5 border-l-2 border-gray-500">
+              {curMed.Description ? (
+                <div>
+                  <h3 className="text-xl font-semibold ">Description</h3>
+                  <p className="pb-4">
+                    {
+                      JSON.parse(curMed.Description)[
+                        "Description/what it treats"
+                      ]
+                    }
+                  </p>
+                  <h3 className="text-xl font-semibold ">Side Effects</h3>
+                  <p>{JSON.parse(curMed.Description)["Side effects"]}</p>
+                </div>
+              ) : (
+                
+                <p></p>
+              )}
+              <p></p>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      {curMed.filePath ? (
+              <img src={curMed.filePath} className="rounded-xl w-3/12  m-10" />
+            ) : (
+              <div></div>
+            )}
+    </div>
+  );
+};
 
 const AddMedManual = ({ inp, setInp, curMed, setCurMed, props }) => {
   var handleReset = () => {
@@ -249,6 +434,7 @@ const AddMedManual = ({ inp, setInp, curMed, setCurMed, props }) => {
     </div>
   );
 };
+
 
 const MedList = ({ curMed, setCurMed, props }) => {
   useEffect(() => {
@@ -356,6 +542,108 @@ const MedList = ({ curMed, setCurMed, props }) => {
             Submit Medications for Mailing
           </button>
         </div>
+      </div>
+    </div>
+  );
+};
+const MedListMob = ({ curMed, setCurMed, props }) => {
+  useEffect(() => {
+    console.log(props.FBuser.prescriptions);
+    if (props.FBuser.prescriptions !== undefined) {
+      JSON.stringify(props.FBuser.prescriptions) == "[]"
+        ? setCurMed("AddPrescription")
+        : setCurMed(
+            props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
+          );
+    }
+  }, [props.FBuser.prescriptions]);
+
+  return (
+    <div class="relative overflow-auto h-full w-full text-white bg_thatblack ">
+      <div className="h-full bg-black-300 flex flex-col">
+        {/* map list to jsx elemnts */}
+        <div
+          onClick={() => setCurMed("AddPrescription")}
+          className={
+            curMed === "AddPrescription"
+              ? "hover:bg-gray-900 bg-gray-800 border-b-2 border-neutral-700 ease-in duration-100 py-1 "
+              : "hover:bg-gray-900 bg-black-800 border-b-2 ease-in border-neutral-700 duration-100 py-1"
+          }
+        >
+          <div className="flex justify-between font-semibold items-center px-4">
+            <FaArrowCircleRight
+              className={
+                curMed === "AddPrescription"
+                  ? "text-gray-500 ease-in duration-300 "
+                  : "text-gray-500 ease-in duration-100 opacity-0 "
+              }
+              size={40}
+              opacity={0}
+            />
+            <div className="flex items-center justify-center p-4  ">
+              <div className="p-1">Add Prescription</div>
+              <AiOutlinePlusCircle size={25} className="" />
+            </div>
+            <FaArrowCircleRight
+              className={
+                curMed === "AddPrescription"
+                  ? "text-black-500 ease-in duration-300 "
+                  : "text-gray-500 ease-in duration-100 opacity-0 "
+              }
+              size={25}
+              opacity={0.75}
+            />
+          </div>
+        </div>
+        {props.FBuser.prescriptions?.map((item) => (
+          <div
+            onClick={() => setCurMed(item)}
+            className={
+              item.Name === curMed.Name
+                ? " border-b-2 bg-gray-600 ease-in duration-300 text-red-300"
+                : "hover:bg-gray-700  border-b linear duration-100 "
+            }
+          >
+            <div className="flex items-center justify-between p-4  ">
+              {/* <img class="w-12 h-12 Prescriptions" src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80" /> */}
+              <div className="flex flex-col">
+                <strong className="text-black-900 font-bold text-lg font-medium">
+                  {item.Name}
+                </strong>
+                <span className="text-black-500 text-sm font-medium">
+                  Medication
+                </span>
+              </div>
+
+              <div className="flex items-center">
+                <div className="border-1  hover:bg-white rounded-full m-4 ease-in duration-100">
+                  <GrFormTrash
+                    className="text-white"
+                    onClick={() => {
+                      props.deletePrescription(item).then(() => {
+                        setCurMed(
+                          JSON.stringify(props.FBuser.prescriptions) == "[]"
+                            ? "AddPrescription"
+                            : props.FBuser.prescriptions[0]
+                        );
+                      });
+                    }}
+                    size={40}
+                  />
+                </div>
+                <FaArrowCircleRight
+                  className={
+                    item.Name === curMed.Name
+                      ? "text-black ease-in duration-300  "
+                      : "text-black ease-in duration-100 opacity-0 "
+                  }
+                  size={40}
+                  opacity={1}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
