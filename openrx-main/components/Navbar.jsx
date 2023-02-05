@@ -114,10 +114,10 @@ const Navbar = (props) => {
         {nav && (
           <div className="text-center">
             <div className="p-4">
-              <Link href="/">Home</Link>
+              <Link onClick={handleNav} href="/">Home</Link>
             </div>
             <div className="p-4">
-              <Link href="/prescriptions">Prescriptions</Link>
+              <Link onClick={handleNav} href="/prescriptions">Prescriptions</Link>
             </div>
             <div className="p-4">
               {props.user ? (

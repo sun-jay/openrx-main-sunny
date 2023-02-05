@@ -52,7 +52,7 @@ export default function Home(props) {
             {/* <ul>{ userDeats.prescriptions?.map((prescription) => ( <li className="p-4">{prescription}</li> ))}</ul> */}
 
 
-            <div className='text-6xl  '>
+            <div className='text-6xl p-8 '>
               Hello, {props.user.displayName}
             </div>
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Projects_Header from "../components/Projects_Header";
 import { useState } from "react";
-import { FaArrowCircleRight , FaArrowCircleLeft} from "react-icons/fa";
+import { FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa";
 import userServices from "../firebase/userServices";
 import { GrFormTrash } from "react-icons/gr";
 import { AiOutlinePlusCircle } from "react-icons/ai";
@@ -77,7 +77,7 @@ const Prescriptions = (props) => {
         {/* create version of this page that fits on mobile */}
         {/* <Projects_Header /> */}
         <div className="flex-row flex flex-auto w-full h-full border-t-2">
-          <div onClick={() => handleList()} className={list?"absolute top-0 left-0 right-0 bottom-0 w-screen h-screen ease-in duration-200":"absolute top-0 left-[-100%] right-0 bottom-0 w-screen h-screen ease-in duration-200" }  >
+          <div onClick={() => handleList()} className={list ? "absolute top-0 left-0 right-0 bottom-0 w-screen h-screen ease-in duration-200" : "absolute top-0 left-[-100%] right-0 bottom-0 w-screen h-screen ease-in duration-200"}  >
             <MedListMob curMed={curMed} setCurMed={setCurMed} props={props} />
           </div>
           <div className=" h-screen w-full inline-block bg-gray-700 ">
@@ -99,7 +99,8 @@ const Prescriptions = (props) => {
                   </div>
                 </div>
               ) : curMed === "AddPrescription" ? (
-                <ManualOrImage
+                <ManualOrImageMob
+                  handleList={handleList}
                   inp={inp}
                   setInp={setInp}
                   curMed={curMed}
@@ -184,6 +185,7 @@ const ManualOrImage = ({
   );
 };
 const ManualOrImageMob = ({
+  handleList,
   inp,
   setInp,
   curMed,
@@ -196,11 +198,22 @@ const ManualOrImageMob = ({
 
   return (
     <div className="flex-row flex-center text-white font-semibold text-lg ">
-      <div>
-        <FaArrowCircleLeft 
-        size = {70}/>
+
+
+
+      <div className="mt-15 mx-5 mt-5 ">
+        <button
+          className={
+            uploadType == "manual"
+              ? "border-2 bg-gray-900 px-16 py-5 rounded-xl"
+              : "border-2 px-16 py-5 rounded-xl"
+          }
+          onClick={() =>handleList()}
+        >
+          Back
+        </button>
       </div>
-      <div className="mt-10 mx-5 inline-block">
+      <div className="mt-5 mx-5 ">
         <button
           className={
             uploadType == "manual"
@@ -212,7 +225,7 @@ const ManualOrImageMob = ({
           Manual Input
         </button>
       </div>
-      <div className="inline-block mx-5 mt-10">
+      <div className="inline-block mx-5 mt-5">
         <button
           className={
             uploadType == "image"
@@ -235,7 +248,7 @@ const ManualOrImageMob = ({
           setLoading={setLoading}
         />
       ) : (
-        <Upload
+        <UploadMob
           props={props}
           curMed={curMed}
           setInp={setInp}
@@ -269,13 +282,13 @@ const DisplayMed = ({ curMed }) => {
                 {curMed.Dosage == "1"
                   ? curMed.Dosage + " Pill"
                   : curMed.Dosage
-                  ? curMed.Dosage + " Pills"
-                  : "No Information"}
+                    ? curMed.Dosage + " Pills"
+                    : "No Information"}
               </div>
-              <div className="text-xl  my-10 text-white inline-block">
+              <div className="text-xl   text-white inline-block">
                 Frequency: {curMed.Frequency} a Day
               </div>
-              <div className="text-xl  my-10 text-white inline-block">
+              <div className="text-xl   text-white inline-block">
                 Notes: {curMed.Notes}
               </div>
             </div>
@@ -286,7 +299,7 @@ const DisplayMed = ({ curMed }) => {
                   <p className="pb-4">
                     {
                       JSON.parse(curMed.Description)[
-                        "Description/what it treats"
+                      "Description/what it treats"
                       ]
                     }
                   </p>
@@ -312,18 +325,18 @@ const DisplayMedMob = ({ curMed, handleList }) => {
     <div className="w-full text-left ">
       <div>
         <div className="text-5xl border-b-2 border-gray-500 mx-auto p-10 text-center text-white">
-        <div className="flex justify-center items-center w-full">
-          <div className="px-2">
-            <FaArrowCircleLeft
-            onClick={() => {handleList()}}
-            size = {40}/>
-          </div>
+          <div className="flex justify-center items-center w-full">
+            <div className="px-2 text-red-300">
+              <FaArrowCircleLeft
+                onClick={() => { handleList() }}
+                size={40} />
+            </div>
             <div className="px-2">{curMed.Name}</div>
-        </div>
+          </div>
         </div>
         <div>
           <div className="flex border-b-2 flex-row  h-full mx-8 border-gray-500 ">
-            
+
             <div className="flex flex-col pr-5 w-8/12  my-8">
               <div className="text-xl my-4 text-white">
                 <p>Dosage:{" "}</p>
@@ -331,8 +344,8 @@ const DisplayMedMob = ({ curMed, handleList }) => {
                   {curMed.Dosage == "1"
                     ? curMed.Dosage + " Pill"
                     : curMed.Dosage
-                    ? curMed.Dosage + " Pills"
-                    : "No Information"}
+                      ? curMed.Dosage + " Pills"
+                      : "No Information"}
                 </p>
               </div>
               <div className="text-xl my-4  text-white inline-block">
@@ -349,7 +362,7 @@ const DisplayMedMob = ({ curMed, handleList }) => {
                   <p className="pb-4">
                     {
                       JSON.parse(curMed.Description)[
-                        "Description/what it treats"
+                      "Description/what it treats"
                       ]
                     }
                   </p>
@@ -357,20 +370,20 @@ const DisplayMedMob = ({ curMed, handleList }) => {
                   <p>{JSON.parse(curMed.Description)["Side effects"]}</p>
                 </div>
               ) : (
-                
+
                 <p></p>
               )}
               <p></p>
-              
+
             </div>
           </div>
         </div>
       </div>
       {curMed.filePath ? (
-              <img src={curMed.filePath} className="rounded-xl w-3/12  m-10" />
-            ) : (
-              <div></div>
-            )}
+        <img src={curMed.filePath} className="rounded-xl w-3/12  m-10" />
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 };
@@ -443,8 +456,8 @@ const MedList = ({ curMed, setCurMed, props }) => {
       JSON.stringify(props.FBuser.prescriptions) == "[]"
         ? setCurMed("AddPrescription")
         : setCurMed(
-            props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
-          );
+          props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
+        );
     }
   }, [props.FBuser.prescriptions]);
 
@@ -534,14 +547,6 @@ const MedList = ({ curMed, setCurMed, props }) => {
             </div>
           </div>
         ))}
-        <div>
-          <button
-            onSubmit={() => console.log("Button Pressed!")}
-            className="py-8 px-5 text-lg text-left bg-gray-600 hover:bg-gray-700 w-full "
-          >
-            Submit Medications for Mailing
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -553,8 +558,8 @@ const MedListMob = ({ curMed, setCurMed, props }) => {
       JSON.stringify(props.FBuser.prescriptions) == "[]"
         ? setCurMed("AddPrescription")
         : setCurMed(
-            props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
-          );
+          props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
+        );
     }
   }, [props.FBuser.prescriptions]);
 
@@ -725,25 +730,23 @@ const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
           });
           response.then((response) => {
             response.json().then((json) => {
-              console.log("JSON: ",  json);
-
               json = JSON.parse(json);
-              // console.log("JSON: " + json);
+              console.log("JSON: " + json);
               const desc = fetch("/api/gpt_description", {
                 method: "POST",
                 body: json["Name of Drug(short name)"],
               });
               desc.then((desc) => {
                 desc.json().then((desc) => {
-                  console.log("DESCRPTION", desc);
                   desc = JSON.parse(desc);
+                  console.log("DESCRPTION", desc);
                   var inp = {
                     Name: json["Name of Drug(short name)"],
                     Dosage: json["how many to take in a dose"],
                     Frequency: json["how many doses to take in a day"],
                     Notes:
                       json[
-                        "any extra notes such as take by mouth or with food"
+                      "any extra notes such as take by mouth or with food"
                       ],
                     filePath: url,
                     Description: JSON.stringify(desc),
@@ -774,6 +777,140 @@ const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
           type="file"
           onChange={handleChange}
           className="m-auto border-2 text-xl border-gray-500 text-center rounded-lg p-5 "
+        ></input>
+        <button
+          className=" bg-gray-900 mt-24 w-3/12 text-xl rounded-xl py-2 mx-auto hover:bg-red-300"
+          onClick={handleUpload}
+        >
+          Upload Image
+        </button>
+      </div>
+    </div>
+  );
+};
+const UploadMob = ({ props, setCurMed, setInp, loading, setLoading }) => {
+  var handleReset = () => {
+    Array.from(document.querySelectorAll("input")).forEach(
+      (input) => (input.value = "")
+    );
+  };
+
+  // State to store uploaded file
+  const [file, setFile] = useState("");
+  const [data, setData] = useState();
+  const [imageUrl, setImageUrl] = useState();
+
+  // progress
+  const [percent, setPercent] = useState(0);
+
+  // Handle file upload event and update state
+  function handleChange(event) {
+    setFile(event.target.files[0]);
+  }
+
+  getDownloadURL(
+    ref(storage, "/files/Screen Shot 2023-02-02 at 11.26.40 PM.png")
+  )
+    .then((url) => {
+      // `url` is the download URL for 'images/stars.jpg'
+
+      // This can be downloaded directly:
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = "blob";
+      xhr.onload = (event) => {
+        const blob = xhr.response;
+      };
+      xhr.open("GET", url);
+      xhr.send();
+
+      // Or inserted into an <img> element
+      const img = document.getElementById("myimg");
+      img.setAttribute("src", url);
+    })
+    .catch((error) => {
+      // Handle any errors
+    });
+
+  const handleUpload = () => {
+    if (!file) {
+      alert("Please upload an image first!");
+    }
+    var filePath = "/files/" + randomstring.generate() + ".jpeg";
+    const storageRef = ref(storage, filePath);
+
+    // progress can be paused and resumed. It also exposes progress updates.
+    // Receives the storage reference and the file to upload.
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    var urlPromise;
+    setLoading(true);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const percent = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+
+        // update progress
+        setPercent(percent);
+      },
+      (err) => console.log(err),
+      () => {
+        // download url
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          console.log(url);
+          const response = fetch("/api/img_parse", {
+            method: "POST",
+            body: url,
+          });
+          response.then((response) => {
+            response.json().then((json) => {
+              json = JSON.parse(json);
+              console.log("JSON: " + json);
+              const desc = fetch("/api/gpt_description", {
+                method: "POST",
+                body: json["Name of Drug(short name)"],
+              });
+              desc.then((desc) => {
+                desc.json().then((desc) => {
+                  desc = JSON.parse(desc);
+                  console.log("DESCRPTION", desc);
+                  var inp = {
+                    Name: json["Name of Drug(short name)"],
+                    Dosage: json["how many to take in a dose"],
+                    Frequency: json["how many doses to take in a day"],
+                    Notes:
+                      json[
+                      "any extra notes such as take by mouth or with food"
+                      ],
+                    filePath: url,
+                    Description: JSON.stringify(desc),
+                  };
+                  props.addPrescription(inp).then(() => {
+                    setCurMed(inp);
+                    handleReset();
+                    setInp("");
+                    setLoading(false);
+                  });
+                });
+              });
+            });
+          });
+        });
+        // .then((json) => {
+        //   console.log("DATA:" + json);
+        // });
+      }
+    );
+  };
+
+  return (
+    <div className="">
+      <div className="flex-col flex mt-16 border-t-2 border-gray-500">
+        <p className="m-10 text-5xl">Upload Picture of Your Perscription</p>
+        <input
+          type="file"
+          onChange={handleChange}
+          className="border-2 text-xl border-gray-500 text-center rounded-lg  "
         ></input>
         <button
           className=" bg-gray-900 mt-24 w-3/12 text-xl rounded-xl py-2 mx-auto hover:bg-red-300"
