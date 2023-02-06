@@ -12,7 +12,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_appId,
   measurementId: process.env.NEXT_PUBLIC_measurementId,
 };
-console.log(firebaseConfig.apiKey);
+// console.log(firebaseConfig.apiKey);
 try {
   firebase.initializeApp(firebaseConfig);
 } catch (err) {

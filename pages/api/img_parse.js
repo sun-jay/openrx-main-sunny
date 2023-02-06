@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       computerVisionClient,
       printedTextSampleURL
     );
-    console.log(printedResult[0].lines);
+    // console.log(printedResult[0].lines);
     return printedResult[0].lines
       .map((line) => line.words.map((word) => word.text).join(" "))
       .join(" ");

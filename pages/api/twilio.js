@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const token = process.env.NEXT_PUBLIC_twilio_token;
   const client = twilio(accountSid, token);
   // const { phone, message } = req.body
-  console.log(req.body);
+  // console.log(req.body);
   client.messages
     .create({
       body: "Hello from OpenRx! Remember to take your " + "medicine" + " today!",

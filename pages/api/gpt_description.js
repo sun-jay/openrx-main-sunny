@@ -1,5 +1,6 @@
 export default async function handler(req, res) {
   var medication = req.body;
+  // console.log("Medi",medication);
   //   var medication = "Penicillin";
 
   const { Configuration, OpenAIApi } = require("openai");

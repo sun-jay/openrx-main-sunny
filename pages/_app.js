@@ -33,8 +33,8 @@ export default function App({ Component, pageProps }) {
 
   // delete spesific prescription from FBuser.prescriptions, get new users from FB to update state
   async function deletePrescription(prescription) {
-    console.log("d", FBuser);
-    console.log("delete", prescription);
+    // console.log("d", FBuser);
+    // console.log("delete", prescription);
     var testarr = [
       "Fish Oil",
       "Vitamins",
@@ -48,7 +48,7 @@ export default function App({ Component, pageProps }) {
     var newPrescriptions = FBuser.prescriptions.filter(
       (p) => p.Name !== prescription.Name
     );
-    console.log("newPrescriptions", prescription);
+    // console.log("newPrescriptions", prescription);
     await userServices.updateUser(FBuser.id, {
       prescriptions: newPrescriptions,
     });
@@ -63,7 +63,8 @@ export default function App({ Component, pageProps }) {
 
   // add prescription to FBuser.prescriptions, get new prescritption from getUserFirebase and update state
   async function addPrescription(prescription) {
-    var newPrescriptions = FBuser.prescriptions.concat(prescription);
+    // console.log("Test", FBuser.prescriptions)
+    var newPrescriptions = FBuser.prescriptions == undefined?[prescription]:FBuser.prescriptions.concat(prescription);
     await userServices.updateUser(FBuser.id, {
       prescriptions: newPrescriptions,
     });
@@ -77,7 +78,7 @@ export default function App({ Component, pageProps }) {
 
   async function getUserFirebase(id) {
     const data = await userServices.getUser(id);
-    console.log("TeSTER", data.id);
+    // console.log("TeSTER", data.id);
     // var user_raw = data.data();
     var user = { ...data.data(), id: data.id };
     return user;
@@ -95,8 +96,11 @@ export default function App({ Component, pageProps }) {
     return null;
   }
   async function handleLoad() {
+    // console.log("handleLoad");
     if (user) {
       var FB = await getFBFromUid();
+      // console.log("Fb",FB);
+
       if (FB) {
         setFBuser(FB);
       } else {
@@ -106,7 +110,13 @@ export default function App({ Component, pageProps }) {
           email: user.email,
           photoURL: user.photoURL,
           prescriptions: [],
-        });
+        }).then((docRef) => {
+          // console.log("Document written with ID: ", docRef.id);
+          getUserFirebase(docRef.id).then((u) => {
+            setFBuser(u);
+          });
+
+        })
       }
     }
   }

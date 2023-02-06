@@ -4,65 +4,86 @@ import { useState, useEffect } from "react";
 
 export default function Home(props) {
 
-  // const [FBuserID, setFBuserID] = useState([]); 
-  // const [userDeats, setUserDeats] = useState("");
-
-  // async function getIdFromUid() {
-  //   const data = await userServices.getAllUsers()
-  //   var FBusers = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-  //   // console.log(FBusers[3].uid, props.user.uid );
-  //   for (let FBuser of FBusers) {
-  //     if (FBuser.uid === props.user.uid) {
-  //       return FBuser.id;
-  //     }
-  //     console.log('no_match')
-  //   }
-  //   return null;
-  // }
-  // async function handleLoad() {
-  //   if (props.user.uid) {
-  //     var id = await getIdFromUid()
-
-  //     if (id) {
-  //       console.log("id valid");
-  //       setFBuserID(id)
-
-  //     } else {
-  //       userServices.addUser({ uid: props.user.uid, name: props.user.displayName, email: props.user.email, photoURL: props.user.photoURL })
-  //     }
-  //   }
-  // }
-
-
-
-  // async function updatePrecription(){
-  //   if await getUserData(props.user.uid)
-  // }
 
   return (
     <div className="text-white w-screen h-screen ">
-      {/* <p className="z-20 pt-24"></p> */}
-      <div className="flex items-center justify-center w-full h-full">
-        {props.user ? (
-          <>
-            {/* <div>Signed in as : {JSON.stringify(props.user.uid)}</div> */}
-            {/* <div>FBuserID : {props.FBuserID}</div> */}
-            {/* <div>{JSON.stringify(userDeats.prescriptions)}</div> */}
-            {/* for prescription in prescriptions, return a unordered list element */}
-            {/* <ul>{ userDeats.prescriptions?.map((prescription) => ( <li className="p-4">{prescription}</li> ))}</ul> */}
 
+      <div className="hidden md:flex h-auto w-full">
+        <div className="flex flex-col items-center justify-center w-8/12 h-full">
+          <div className='text-6xl py-10 '>
+            What is OpenRx?
+          </div>
+          <div id="vid" className=" w-full px-20 aspect-video">
+            <iframe
+              src="https://www.youtube.com/embed/_BUq-WnVlhU"
+              frameborder=""
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            ></iframe>
+          </div>
 
-            <div className='text-6xl p-8 '>
+        </div>
+        <div className="flex flex-col justify-center text-center mr-20 items-center">
+
+          {props.user ? (
+            <div className='text-6xl '>
               Hello, {props.user.displayName}
             </div>
 
-          </>
-        ) : (
-          <div className='text-6xl  '>
-            Please Sign In
-          </div>
-        )}
+          ) : (
+            <div className='text-6xl  '>
+
+              {/* create sign in button thats just text */}
+              <p >
+                <span onClick={props.signIn} className="p-2 cursor-pointer underline text-red-300">Sign In</span>
+              </p>
+              to get started
+
+            </div>
+          )}
+        </div>
       </div>
+
+
+      <div className="md:hidden flex flex-col h-full w-full">
+        <div className="flex flex-col items-center justify-center w-full ">
+          <div className='text-6xl text-center py-10 '>
+            What is OpenRx?
+          </div>
+          <div id="vid" className=" w-full px-4 aspect-video">
+            <iframe
+              src="https://www.youtube.com/embed/_BUq-WnVlhU"
+              frameborder=""
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            ></iframe>
+          </div>
+
+        </div>
+        <div className="flex flex-col justify-center text-center pt-16 items-center">
+
+          {props.user ? (
+            <div className='text-6xl '>
+              Hello, {props.user.displayName}
+            </div>
+
+          ) : (
+            <div className='text-5xl px-2 '>
+
+              {/* create sign in button thats just text */}
+              <p >
+                <span onClick={props.signIn} className="p-2 cursor-pointer	underline text-red-300">Sign In</span>
+              </p>
+              to get started
+            </div>
+          )}
+        </div>
+      </div>
+
+
+
     </div>
   );
 }

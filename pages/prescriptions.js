@@ -30,7 +30,7 @@ const Prescriptions = (props) => {
   });
 
   return (
-    <div >
+    props.user ? (<div >
       <div className=" hidden md:block w-full h-screen overflow-hidden">
         {/* <Projects_Header /> */}
         <div className="flex-row flex flex-auto w-full h-full border-t-2">
@@ -121,7 +121,16 @@ const Prescriptions = (props) => {
         </div>
 
       </div>
-    </div>
+    </div>) :
+      <div className="flex flex-col items-center justify-center w-screen h-screen">
+        <div className='text-5xl px-2 text-center text-white'>
+          {/* create sign in button thats just text */}
+          <p >
+            <span onClick={props.signIn} className="p-2 cursor-pointer	underline text-red-300">Sign In</span>
+          </p>
+          to manage prescriptions
+        </div>
+      </div>
   );
 };
 
@@ -209,7 +218,7 @@ const ManualOrImageMob = ({
               ? "border-2 bg-gray-900 px-16 py-5 rounded-xl"
               : "border-2 px-16 py-5 rounded-xl"
           }
-          onClick={() =>handleList()}
+          onClick={() => handleList()}
         >
           Back
         </button>
@@ -239,7 +248,7 @@ const ManualOrImageMob = ({
         </button>
       </div>
       {uploadType === "manual" ? (
-        <AddMedManual
+        <AddMedManualMob
           inp={inp}
           setInp={setInp}
           curMed={curMed}
@@ -448,11 +457,70 @@ const AddMedManual = ({ inp, setInp, curMed, setCurMed, props }) => {
     </div>
   );
 };
+const AddMedManualMob = ({ inp, setInp, curMed, setCurMed, props }) => {
+  var handleReset = () => {
+    Array.from(document.querySelectorAll("input")).forEach(
+      (input) => (input.value = "")
+    );
+  };
+  return (
+    <div className="w-full ">
+      {curMed === "AddPrescription" ? (
+        <div className="text-3xl   w-full p-5 text-gray-800">
+          {/* MAKE SURE TO ADD ON CHANGE UFNCTIONS HERE */}
+
+          <input
+            className="m-2 p-2 w-9/12 text-center rounded-xl"
+            type="text"
+            placeholder="Name of Prescription"
+            onChange={(e) => setInp({ ...inp, Name: e.target.value })}
+          />
+          <input
+            className="m-2 p-2 w-9/12 text-center rounded-xl"
+            type="text"
+            placeholder="Number of Pills"
+            onChange={(e) => setInp({ ...inp, Dosage: e.target.value })}
+          />
+          <input
+            className="m-2 p-2 w-9/12 text-center rounded-xl"
+            type="text"
+            placeholder="How many times a day"
+            onChange={(e) => setInp({ ...inp, Frequency: e.target.value })}
+          />
+          <input
+            className="m-2 p-2 w-9/12 text-center rounded-xl"
+            type="text"
+            placeholder="Notes"
+            onChange={(e) => setInp({ ...inp, Notes: e.target.value })}
+          />
+
+          {/* MAKE IT ADD JUST A STRING FOR NOWs */}
+          <div>
+            <button
+              className="text-white border-4 font-bold rounded-lg p-4 m-10 hover:bg-red-300"
+              onClick={() => {
+                props.addPrescription(inp).then(() => {
+                  setCurMed(inp);
+                  handleReset();
+                  setInp("");
+                });
+              }}
+            >
+              Add Prescription
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
+};
 
 
 const MedList = ({ curMed, setCurMed, props }) => {
   useEffect(() => {
-    console.log(props.FBuser.prescriptions);
+    // console.log(props.FBuser.prescriptions);
     if (props.FBuser.prescriptions !== undefined) {
       JSON.stringify(props.FBuser.prescriptions) == "[]"
         ? setCurMed("AddPrescription")
@@ -499,7 +567,7 @@ const MedList = ({ curMed, setCurMed, props }) => {
             />
           </div>
         </div>
-        {props.FBuser.prescriptions?.map((item,index) => (
+        {props.FBuser.prescriptions?.map((item, index) => (
           <div
             key={index}
             onClick={() => setCurMed(item)}
@@ -516,8 +584,10 @@ const MedList = ({ curMed, setCurMed, props }) => {
                   {item.Name}
                 </strong>
                 <span className="text-black-500 text-sm font-medium">
-                  <button onClick = {()=>{(props.sendTwilio())
-                  console.log(item.Name)}}>Remind Me</button>
+                  <button onClick={() => {
+                    (props.sendTwilio())
+                    // console.log(item.Name)
+                  }}>Remind Me</button>
                 </span>
               </div>
 
@@ -556,7 +626,7 @@ const MedList = ({ curMed, setCurMed, props }) => {
 };
 const MedListMob = ({ curMed, setCurMed, props }) => {
   useEffect(() => {
-    console.log(props.FBuser.prescriptions);
+    // console.log(props.FBuser.prescriptions);
     if (props.FBuser.prescriptions !== undefined) {
       JSON.stringify(props.FBuser.prescriptions) == "[]"
         ? setCurMed("AddPrescription")
@@ -603,7 +673,7 @@ const MedListMob = ({ curMed, setCurMed, props }) => {
             />
           </div>
         </div>
-        {props.FBuser.prescriptions?.map((item,index) => (
+        {props.FBuser.prescriptions?.map((item, index) => (
           <div
             key={index}
             onClick={() => setCurMed(item)}
@@ -620,8 +690,10 @@ const MedListMob = ({ curMed, setCurMed, props }) => {
                   {item.Name}
                 </strong>
                 <span className="text-black-500 text-sm font-medium">
-                  <button onClick = {()=>{(props.sendTwilio())
-                  console.log(item.Name)}
+                  <button onClick={() => {
+                    (props.sendTwilio())
+                    // console.log(item.Name)
+                  }
                   }>Remind Me</button>
                 </span>
               </div>
@@ -729,7 +801,7 @@ const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
       () => {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
+          // console.log(url);
           const response = fetch("/api/img_parse", {
             method: "POST",
             body: url,
@@ -737,7 +809,7 @@ const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
           response.then((response) => {
             response.json().then((json) => {
               json = JSON.parse(json);
-              console.log("JSON: " + json);
+              // console.log("JSON: " + json);
               const desc = fetch("/api/gpt_description", {
                 method: "POST",
                 body: json["Name of Drug(short name)"],
@@ -745,7 +817,7 @@ const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
               desc.then((desc) => {
                 desc.json().then((desc) => {
                   desc = JSON.parse(desc);
-                  console.log("DESCRPTION", desc);
+                  // console.log("DESCRPTION", desc);
                   var inp = {
                     Name: json["Name of Drug(short name)"],
                     Dosage: json["how many to take in a dose"],
@@ -863,7 +935,7 @@ const UploadMob = ({ props, setCurMed, setInp, loading, setLoading }) => {
       () => {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
+          // console.log(url);
           const response = fetch("/api/img_parse", {
             method: "POST",
             body: url,
@@ -871,7 +943,7 @@ const UploadMob = ({ props, setCurMed, setInp, loading, setLoading }) => {
           response.then((response) => {
             response.json().then((json) => {
               json = JSON.parse(json);
-              console.log("JSON: " + json);
+              // console.log("JSON: " + json);
               const desc = fetch("/api/gpt_description", {
                 method: "POST",
                 body: json["Name of Drug(short name)"],
@@ -879,7 +951,7 @@ const UploadMob = ({ props, setCurMed, setInp, loading, setLoading }) => {
               desc.then((desc) => {
                 desc.json().then((desc) => {
                   desc = JSON.parse(desc);
-                  console.log("DESCRPTION", desc);
+                  // console.log("DESCRPTION", desc);
                   var inp = {
                     Name: json["Name of Drug(short name)"],
                     Dosage: json["how many to take in a dose"],
