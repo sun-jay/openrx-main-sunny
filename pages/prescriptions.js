@@ -583,10 +583,10 @@ const MedList = ({ curMed, setCurMed, props }) => {
                 <strong className="text-black-900 font-bold text-lg font-medium">
                   {item.Name}
                 </strong>
-                <span className="text-black-500 text-sm font-medium">
+                <span className="text-black-500 text-sm font-medium ">
                   <button onClick={() => {
-                    (props.sendTwilio())
-                    // console.log(item.Name)
+                    props.sendTwilio(item.Name).then
+                    console.log(item.Name)
                   }}>Remind Me</button>
                 </span>
               </div>
