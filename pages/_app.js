@@ -27,9 +27,9 @@ export default function App({ Component, pageProps }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: {drug: perscription, phone: FBuser.phone},
+      body: { drug: perscription, phone: FBuser.phone },
     });
-  }
+  };
 
   // delete spesific prescription from FBuser.prescriptions, get new users from FB to update state
   async function deletePrescription(prescription) {
@@ -64,7 +64,10 @@ export default function App({ Component, pageProps }) {
   // add prescription to FBuser.prescriptions, get new prescritption from getUserFirebase and update state
   async function addPrescription(prescription) {
     // console.log("Test", FBuser.prescriptions)
-    var newPrescriptions = FBuser.prescriptions == undefined?[prescription]:FBuser.prescriptions.concat(prescription);
+    var newPrescriptions =
+      FBuser.prescriptions == undefined
+        ? [prescription]
+        : FBuser.prescriptions.concat(prescription);
     await userServices.updateUser(FBuser.id, {
       prescriptions: newPrescriptions,
     });
@@ -80,11 +83,10 @@ export default function App({ Component, pageProps }) {
     await userServices.updateUser(FBuser.id, {
       phone: phone,
     });
-    var u = await getUserFirebase(FBuser.id)
-    setFBuser(u)
+    var u = await getUserFirebase(FBuser.id);
+    setFBuser(u);
     return u;
   }
-
 
   async function getUserFirebase(id) {
     const data = await userServices.getUser(id);
@@ -114,19 +116,20 @@ export default function App({ Component, pageProps }) {
       if (FB) {
         setFBuser(FB);
       } else {
-        userServices.addUser({
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          prescriptions: [],
-        }).then((docRef) => {
-          // console.log("Document written with ID: ", docRef.id);
-          getUserFirebase(docRef.id).then((u) => {
-            setFBuser(u);
+        userServices
+          .addUser({
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            prescriptions: [],
+          })
+          .then((docRef) => {
+            // console.log("Document written with ID: ", docRef.id);
+            getUserFirebase(docRef.id).then((u) => {
+              setFBuser(u);
+            });
           });
-
-        })
       }
     }
   }

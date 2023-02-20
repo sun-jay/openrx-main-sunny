@@ -1049,32 +1049,56 @@ const ReminderPopUp = ({ props, curMed, setShowNotify }) => {
         >
           <RxCross1 />
         </div>
-        <ConfirmNotification curMed={curMed} />
-        {/* <h1 className="my-2 text-3xl font-semibold">Reminder Setup</h1>
-        <form className="my-10" onSubmit>
-          <input
-            className="block m-auto my-10 text-black p-2 rounded-lg"
-            type="tel"
-            placeholder="Phone #: xxx-xxx-xxxx"
-            onChange={(curNumber) => {
-              setNumber(curNumber);
-            }}
-          />
-          <input className="bg-gray-900 px-4 p-2 rounded-lg" type="submit" />
-        </form> */}
+        {props.FBuser.phone ? (
+          <ConfirmNotification curMed={curMed} props={props} />
+        ) : (
+          <PhoneNumber />
+        )}
+        {/* <ConfirmNotification curMed={curMed} /> */}
       </div>
     </div>
   );
 };
 
-const ConfirmNotification = ({ curMed }) => {
+const PhoneNumber = ({}) => {
+  const [number, setNumber] = useState();
+  return (
+    <>
+      <h1 className="my-2 text-3xl font-semibold">Reminder Setup</h1>
+      <div className="my-10">
+        <input
+          className="block m-auto my-10 text-black p-2 rounded-lg"
+          type="tel"
+          placeholder="Phone #: xxx-xxx-xxxx"
+          onChange={(curNumber) => {
+            setNumber(curNumber.target.value);
+          }}
+        />
+        <button
+          className="bg-gray-900 px-4 p-2 rounded-lg"
+          onClick={() => props.updatePhone(number)}
+        >
+          Submit
+        </button>
+      </div>
+      <p>{number}</p>
+    </>
+  );
+};
+const ConfirmNotification = ({ curMed, props }) => {
   return (
     <div>
       <p className="font-xl font-semibold m-5 ">
-        Send {curMed.Name} notifications to PHONE NUMBER
+        Send {curMed.Name} notifications to {props.FBuser.phone}
       </p>
       <div className="flex flex-row justify-between mt-10 mx-16 ">
-        <div className="font-semibold bg-gray-900 p-2 rounded-lg  ">
+        <div
+          className="font-semibold bg-gray-900 p-2 rounded-lg  "
+          onClick={() => {
+            props.sendTwilio(curMed.Name);
+            console.log("test");
+          }}
+        >
           <button>Confirm</button>
         </div>
         <div
