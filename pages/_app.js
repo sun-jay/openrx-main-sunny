@@ -27,7 +27,7 @@ export default function App({ Component, pageProps }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: perscription,
+      body: {drug: perscription, phone: FBuser.phone},
     });
   }
 
@@ -75,6 +75,16 @@ export default function App({ Component, pageProps }) {
       return u;
     });
   }
+  // update phone number in FBuser, get new users from FB to update state
+  async function updatePhone(phone) {
+    await userServices.updateUser(FBuser.id, {
+      phone: phone,
+    });
+    var u = await getUserFirebase(FBuser.id)
+    setFBuser(u)
+    return u;
+  }
+
 
   async function getUserFirebase(id) {
     const data = await userServices.getUser(id);
@@ -159,6 +169,7 @@ export default function App({ Component, pageProps }) {
         signOut={signOut}
         deletePrescription={deletePrescription}
         addPrescription={addPrescription}
+        updatePhone={updatePhone}
       />
     </div>
   );
