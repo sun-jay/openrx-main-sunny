@@ -32,7 +32,15 @@ const Prescriptions = (props) => {
 
   return props.user ? (
     <div>
-      {showNotify ? <ReminderPopUp setShowNotify={setShowNotify} /> : <></>}
+      {showNotify ? (
+        <ReminderPopUp
+          props={props}
+          curMed={curMed}
+          setShowNotify={setShowNotify}
+        />
+      ) : (
+        <></>
+      )}
       <div
         className={
           showNotify
@@ -1035,11 +1043,14 @@ const ReminderPopUp = ({ props, curMed, setShowNotify }) => {
     // <div className="w-screen h-screen text-center bg-black overflow-hidden absolute top-0 left-0  opacity-90 z-10">
     <div className="flex justify-center items-center w-screen h-screen flex-center top-0 left-0 absolute z-10">
       <div className="bg-gray-800 relative text-white w-auto h-auto p-10 text-center rounded-xl">
-        <RxCross1
-          className="absolute top-5 right-5 inline-block hover:bg-red-500  rounded-lg "
+        <div
+          className="absolute top-5 right-5 inline-block hover:bg-red-500 p-1 rounded-lg "
           onClick={() => setShowNotify(false)}
-        />
-        <h1 className="my-2 text-3xl font-semibold">Reminder Setup</h1>
+        >
+          <RxCross1 />
+        </div>
+        <ConfirmNotification curMed={curMed} />
+        {/* <h1 className="my-2 text-3xl font-semibold">Reminder Setup</h1>
         <form className="my-10" onSubmit>
           <input
             className="block m-auto my-10 text-black p-2 rounded-lg"
@@ -1050,7 +1061,28 @@ const ReminderPopUp = ({ props, curMed, setShowNotify }) => {
             }}
           />
           <input className="bg-gray-900 px-4 p-2 rounded-lg" type="submit" />
-        </form>
+        </form> */}
+      </div>
+    </div>
+  );
+};
+
+const ConfirmNotification = ({ curMed }) => {
+  return (
+    <div>
+      <p className="font-xl font-semibold m-5 ">
+        Send {curMed.Name} notifications to PHONE NUMBER
+      </p>
+      <div className="flex flex-row justify-between mt-10 mx-16 ">
+        <div className="font-semibold bg-gray-900 p-2 rounded-lg  ">
+          <button>Confirm</button>
+        </div>
+        <div
+          className="p-2 bg-gray-900 rounded-lg 
+        "
+        >
+          <button className="">Change Phone #</button>
+        </div>
       </div>
     </div>
   );
