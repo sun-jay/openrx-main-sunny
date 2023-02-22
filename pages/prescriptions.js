@@ -107,7 +107,12 @@ const Prescriptions = (props) => {
                 : "absolute top-0 left-[-100%] right-0 bottom-0 w-screen h-screen ease-in duration-200"
             }
           >
-            <MedListMob curMed={curMed} setCurMed={setCurMed} props={props} />
+            <MedListMob
+              curMed={curMed}
+              setCurMed={setCurMed}
+              props={props}
+              setShowNotify={setShowNotify}
+            />
           </div>
           <div className=" h-screen w-full inline-block bg-gray-700 ">
             <div className="w-full inline text-center">
@@ -656,7 +661,7 @@ const MedList = ({ setShowNotify, curMed, setCurMed, props }) => {
     </div>
   );
 };
-const MedListMob = ({ curMed, setCurMed, props }) => {
+const MedListMob = ({ curMed, setCurMed, props, setShowNotify }) => {
   useEffect(() => {
     // console.log(props.FBuser.prescriptions);
     if (props.FBuser.prescriptions !== undefined) {
@@ -724,7 +729,7 @@ const MedListMob = ({ curMed, setCurMed, props }) => {
                 <span className="text-black-500 text-sm font-medium">
                   <button
                     onClick={() => {
-                      props.sendTwilio();
+                      setShowNotify(true);
                       // console.log(item.Name)
                     }}
                   >
@@ -1037,7 +1042,22 @@ const UploadMob = ({ props, setCurMed, setInp, loading, setLoading }) => {
 };
 
 const ReminderPopUp = ({ props, curMed, setShowNotify }) => {
-  const [number, setNumber] = useState();
+  const [changePNumber, setChangePNumber] = useState(false);
+
+  function handleChangePhoneNumber() {
+    if (changePNumber) {
+      return <PhoneNumber props={props} setChangePNumber={setChangePNumber} />;
+    } else {
+      return (
+        <ConfirmNotification
+          curMed={curMed}
+          props={props}
+          setChangePNumber={setChangePNumber}
+          setShowNotify={setShowNotify}
+        />
+      );
+    }
+  }
 
   return (
     // <div className="w-screen h-screen text-center bg-black overflow-hidden absolute top-0 left-0  opacity-90 z-10">
@@ -1050,9 +1070,9 @@ const ReminderPopUp = ({ props, curMed, setShowNotify }) => {
           <RxCross1 />
         </div>
         {props.FBuser.phone ? (
-          <ConfirmNotification curMed={curMed} props={props} />
+          handleChangePhoneNumber()
         ) : (
-          <PhoneNumber />
+          <PhoneNumber props={props} />
         )}
         {/* <ConfirmNotification curMed={curMed} /> */}
       </div>
@@ -1060,7 +1080,7 @@ const ReminderPopUp = ({ props, curMed, setShowNotify }) => {
   );
 };
 
-const PhoneNumber = ({}) => {
+const PhoneNumber = ({ props, setChangePNumber }) => {
   const [number, setNumber] = useState();
   return (
     <>
@@ -1076,7 +1096,9 @@ const PhoneNumber = ({}) => {
         />
         <button
           className="bg-gray-900 px-4 p-2 rounded-lg"
-          onClick={() => props.updatePhone(number)}
+          onClick={() => {
+            props.updatePhone(number).then(() => setChangePNumber(false));
+          }}
         >
           Submit
         </button>
@@ -1085,7 +1107,12 @@ const PhoneNumber = ({}) => {
     </>
   );
 };
-const ConfirmNotification = ({ curMed, props }) => {
+const ConfirmNotification = ({
+  curMed,
+  props,
+  setChangePNumber,
+  setShowNotify,
+}) => {
   return (
     <div>
       <p className="font-xl font-semibold m-5 ">
@@ -1093,17 +1120,23 @@ const ConfirmNotification = ({ curMed, props }) => {
       </p>
       <div className="flex flex-row justify-between mt-10 mx-16 ">
         <div
-          className="font-semibold bg-gray-900 p-2 rounded-lg  "
+          className="font-semibold bg-gray-900 p-2 rounded-lg mr-2  "
           onClick={() => {
             props.sendTwilio(curMed.Name);
-            console.log("test");
           }}
         >
-          <button>Confirm</button>
+          <button
+            onClick={() => {
+              setShowNotify(false);
+            }}
+          >
+            Confirm
+          </button>
         </div>
         <div
-          className="p-2 bg-gray-900 rounded-lg 
+          className="p-2 bg-gray-900 rounded-lg ml-2
         "
+          onClick={() => setChangePNumber(true)}
         >
           <button className="">Change Phone #</button>
         </div>

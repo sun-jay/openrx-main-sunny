@@ -27,7 +27,7 @@ export default function App({ Component, pageProps }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: { drug: perscription, phone: FBuser.phone },
+      body: JSON.stringify({ drug: perscription, phone: FBuser.phone }),
     });
   };
 
