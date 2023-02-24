@@ -52,9 +52,9 @@ const Navbar = (props) => {
               </div>
             ) : (
               <>
-                <Link className="p-10 px-10 inline-block" href="/newAccount">
+                {/* <Link className="p-10 px-10 inline-block" href="/newAccount">
                   <h1 style={{ color: `${textColor}` }}>Sign Up</h1>
-                </Link>
+                </Link> */}
                 <div className="inline-block p-12 font-semibold">
                   <button onClick={props.signIn} className="">
                     Sign In
