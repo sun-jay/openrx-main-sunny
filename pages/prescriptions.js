@@ -327,13 +327,13 @@ const DisplayMed = ({ curMed }) => {
                 {curMed.Dosage == "1"
                   ? curMed.Dosage + " Pill"
                   : curMed.Dosage
-                  ? curMed.Dosage + " Pills"
-                  : "No Information"}
+                    ? curMed.Dosage + " Pills"
+                    : "No Information"}
               </div>
               <div className="text-xl   text-white inline-block">
                 Frequency: {curMed.Frequency} a Day
               </div>
-              <div className="text-xl   text-white inline-block">
+              <div className="text-xl my-10 text-white inline-block">
                 Notes: {curMed.Notes}
               </div>
             </div>
@@ -344,12 +344,17 @@ const DisplayMed = ({ curMed }) => {
                   <p className="pb-4">
                     {
                       JSON.parse(curMed.Description)[
-                        "Description/what it treats"
+                      "Description/what it treats"
                       ]
                     }
                   </p>
-                  <h3 className="text-xl font-semibold ">Side Effects</h3>
-                  <p>{JSON.parse(curMed.Description)["Side effects"]}</p>
+                  <h3 className="text-xl font-semibold ">Side Effects and Warnings</h3>
+                  <p>{
+                    JSON.parse(curMed.Description)["side effects"] ?
+                      JSON.parse(curMed.Description)["side effects"] :
+                      JSON.parse(curMed.Description)["Side effects"]
+
+                  }</p>
                 </div>
               ) : (
                 <p></p>
@@ -383,15 +388,15 @@ const DisplayMedMob = ({ curMed, handleList }) => {
         </div>
         <div>
           <div className="flex border-b-2 flex-row  h-full mx-8 border-gray-500 ">
-            <div className="flex flex-col pr-5 w-8/12  my-8">
-              <div className="text-xl my-4 text-white">
+            <div className="flex flex-col pr-5 w-8/12  my-5">
+              <div className="text-xl text-white">
                 <p>Dosage: </p>
                 <p>
                   {curMed.Dosage == "1"
                     ? curMed.Dosage + " Pill"
                     : curMed.Dosage
-                    ? curMed.Dosage + " Pills"
-                    : "No Information"}
+                      ? curMed.Dosage + " Pills"
+                      : "No Information"}
                 </p>
               </div>
               <div className="text-xl my-4  text-white inline-block">
@@ -400,6 +405,11 @@ const DisplayMedMob = ({ curMed, handleList }) => {
               <div className="text-xl my-4  text-white inline-block">
                 Notes: {curMed.Notes}
               </div>
+              {curMed.filePath ? (
+                <img src={curMed.filePath} className="rounded-xl w-full " />
+              ) : (
+                <div></div>
+              )}
             </div>
             <div className="text-white p-5 border-l-2 border-gray-500">
               {curMed.Description ? (
@@ -408,12 +418,17 @@ const DisplayMedMob = ({ curMed, handleList }) => {
                   <p className="pb-4">
                     {
                       JSON.parse(curMed.Description)[
-                        "Description/what it treats"
+                      "Description/what it treats"
                       ]
                     }
                   </p>
-                  <h3 className="text-xl font-semibold ">Side Effects</h3>
-                  <p>{JSON.parse(curMed.Description)["Side effects"]}</p>
+                  <h3 className="text-lx font-semibold ">Side Effects</h3>
+                  <p className="text-sm">{
+                    JSON.parse(curMed.Description)["side effects"] ?
+                      JSON.parse(curMed.Description)["side effects"] :
+                      JSON.parse(curMed.Description)["Side effects"]
+
+                  }</p>
                 </div>
               ) : (
                 <p></p>
@@ -423,11 +438,6 @@ const DisplayMedMob = ({ curMed, handleList }) => {
           </div>
         </div>
       </div>
-      {curMed.filePath ? (
-        <img src={curMed.filePath} className="rounded-xl w-3/12  m-10" />
-      ) : (
-        <div></div>
-      )}
     </div>
   );
 };
@@ -558,8 +568,8 @@ const MedList = ({ setShowNotify, curMed, setCurMed, props }) => {
       JSON.stringify(props.FBuser.prescriptions) == "[]"
         ? setCurMed("AddPrescription")
         : setCurMed(
-            props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
-          );
+          props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
+        );
     }
   }, [props.FBuser.prescriptions]);
 
@@ -668,8 +678,8 @@ const MedListMob = ({ curMed, setCurMed, props, setShowNotify }) => {
       JSON.stringify(props.FBuser.prescriptions) == "[]"
         ? setCurMed("AddPrescription")
         : setCurMed(
-            props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
-          );
+          props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
+        );
     }
   }, [props.FBuser.prescriptions]);
 
@@ -847,36 +857,30 @@ const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
             body: url,
           });
           response.then((response) => {
-            response.json().then((json) => {
-              json = JSON.parse(json);
-              // console.log("JSON: " + json);
-              const desc = fetch("/api/gpt_description", {
-                method: "POST",
-                body: json["Name of Drug(short name)"],
+            response.json().then((res_json) => {
+              var json_info = JSON.parse(res_json.split("~")[0])
+              var json_desc = JSON.parse(res_json.split("~")[1])
+
+              var inp = {
+                Name: json_info["Name of Drug(short name)"],
+                Dosage: json_info["how many to take in a dose"],
+                Frequency: json_info["how many doses to take in a day"],
+                Notes:
+                  json_info[
+                  "any extra notes such as take by mouth or with food"
+                  ],
+                filePath: url,
+                Description: JSON.stringify(json_desc),
+              };
+              props.addPrescription(inp).then(() => {
+                setCurMed(inp);
+                handleReset();
+                setInp("");
+                setLoading(false);
               });
-              desc.then((desc) => {
-                desc.json().then((desc) => {
-                  desc = JSON.parse(desc);
-                  // console.log("DESCRPTION", desc);
-                  var inp = {
-                    Name: json["Name of Drug(short name)"],
-                    Dosage: json["how many to take in a dose"],
-                    Frequency: json["how many doses to take in a day"],
-                    Notes:
-                      json[
-                        "any extra notes such as take by mouth or with food"
-                      ],
-                    filePath: url,
-                    Description: JSON.stringify(desc),
-                  };
-                  props.addPrescription(inp).then(() => {
-                    setCurMed(inp);
-                    handleReset();
-                    setInp("");
-                    setLoading(false);
-                  });
-                });
-              });
+
+
+
             });
           });
         });
@@ -998,7 +1002,7 @@ const UploadMob = ({ props, setCurMed, setInp, loading, setLoading }) => {
                     Frequency: json["how many doses to take in a day"],
                     Notes:
                       json[
-                        "any extra notes such as take by mouth or with food"
+                      "any extra notes such as take by mouth or with food"
                       ],
                     filePath: url,
                     Description: JSON.stringify(desc),
