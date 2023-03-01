@@ -442,6 +442,8 @@ const DisplayMedMob = ({ curMed, handleList }) => {
   );
 };
 
+
+
 const AddMedManual = ({ inp, setInp, curMed, setCurMed, props }) => {
   var handleReset = () => {
     Array.from(document.querySelectorAll("input")).forEach(
@@ -568,8 +570,8 @@ const MedList = ({ setShowNotify, curMed, setCurMed, props }) => {
       JSON.stringify(props.FBuser.prescriptions) == "[]"
         ? setCurMed("AddPrescription")
         : setCurMed(
-          props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
-        );
+            props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
+          );
     }
   }, [props.FBuser.prescriptions]);
 
@@ -678,8 +680,8 @@ const MedListMob = ({ curMed, setCurMed, props, setShowNotify }) => {
       JSON.stringify(props.FBuser.prescriptions) == "[]"
         ? setCurMed("AddPrescription")
         : setCurMed(
-          props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
-        );
+            props.FBuser.prescriptions[props.FBuser.prescriptions.length - 1]
+          );
     }
   }, [props.FBuser.prescriptions]);
 
@@ -857,30 +859,36 @@ const Upload = ({ props, setCurMed, setInp, loading, setLoading }) => {
             body: url,
           });
           response.then((response) => {
-            response.json().then((res_json) => {
-              var json_info = JSON.parse(res_json.split("~")[0])
-              var json_desc = JSON.parse(res_json.split("~")[1])
-
-              var inp = {
-                Name: json_info["Name of Drug(short name)"],
-                Dosage: json_info["how many to take in a dose"],
-                Frequency: json_info["how many doses to take in a day"],
-                Notes:
-                  json_info[
-                  "any extra notes such as take by mouth or with food"
-                  ],
-                filePath: url,
-                Description: JSON.stringify(json_desc),
-              };
-              props.addPrescription(inp).then(() => {
-                setCurMed(inp);
-                handleReset();
-                setInp("");
-                setLoading(false);
+            response.json().then((json) => {
+              json = JSON.parse(json);
+              // console.log("JSON: " + json);
+              const desc = fetch("/api/gpt_description", {
+                method: "POST",
+                body: json["Name of Drug(short name)"],
               });
-
-
-
+              desc.then((desc) => {
+                desc.json().then((desc) => {
+                  desc = JSON.parse(desc);
+                  // console.log("DESCRPTION", desc);
+                  var inp = {
+                    Name: json["Name of Drug(short name)"],
+                    Dosage: json["how many to take in a dose"],
+                    Frequency: json["how many doses to take in a day"],
+                    Notes:
+                      json[
+                        "any extra notes such as take by mouth or with food"
+                      ],
+                    filePath: url,
+                    Description: JSON.stringify(desc),
+                  };
+                  props.addPrescription(inp).then(() => {
+                    setCurMed(inp);
+                    handleReset();
+                    setInp("");
+                    setLoading(false);
+                  });
+                });
+              });
             });
           });
         });
@@ -1002,7 +1010,7 @@ const UploadMob = ({ props, setCurMed, setInp, loading, setLoading }) => {
                     Frequency: json["how many doses to take in a day"],
                     Notes:
                       json[
-                      "any extra notes such as take by mouth or with food"
+                        "any extra notes such as take by mouth or with food"
                       ],
                     filePath: url,
                     Description: JSON.stringify(desc),

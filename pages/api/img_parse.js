@@ -64,26 +64,17 @@ export default async function handler(req, res) {
     prompt:
       "Heres text from a drug label: " +
       raw_txt +
-      'Return the data in this form: {"Name of Drug(short name)": return a string, "how many to take in a dose": return only int or "?" if information isnt there, "how many doses to take in a day": return only int or "?" if no information is provided, "any extra notes such as take by mouth or with food": return a string}'
-      + " Now, given the name of the drug, return infromation about the drug in this json format: " +  '{"Description/what it treats": string,"side effects":a string that contains side effects and/or warns of substances that should not be taken with the drug} . Separate the two responses with a ~',
+      'Return the data in this form: {"Name of Drug(short name)": return a string, "how many to take in a dose": return only int or "?", "how many doses to take in a day": return only int or "?", "any extra notes such as take by mouth or with food": return a string}',
     max_tokens: 300,
     temperature: 0.1,
   });
 
-  // return an error if the response is not successful
-  if (response.status !== 200) {
-    return res.status(500).json({ error: response.statusText });
-  }
-
   var output = response.data["choices"][0]["text"];
-  console.log(output);
 
   res.setHeader(
     "Cache-Control",
     "public, s-maxage=86400, stale-while-revalidate=43200"
   );
-
-
 
   return res.status(200).json(output);
 }
