@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     require("@azure/cognitiveservices-computervision").ComputerVisionClient;
   const ApiKeyCredentials = require("@azure/ms-rest-js").ApiKeyCredentials;
   const key = process.env.NEXT_PUBLIC_AZURE_KEY;
-  const endpoint = "https://westus2.api.cognitive.microsoft.com/";
+  const endpoint = process.env.NEXT_PUBLIC_AZURE_ENDPOINT;
 
   const computerVisionClient = new ComputerVisionClient(
     new ApiKeyCredentials({ inHeader: { "Ocp-Apim-Subscription-Key": key } }),
