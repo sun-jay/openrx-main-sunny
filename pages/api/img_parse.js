@@ -1,3 +1,4 @@
+import OpenAI from "openai";
 export default async function handler(req, res) {
   const async = require("async");
   const sleep = require("util").promisify(setTimeout);
@@ -54,12 +55,14 @@ export default async function handler(req, res) {
 
   const raw_txt = await ret_ocr(req.body);
 
-  const { Configuration, OpenAIApi } = require("openai");
-  const configuration = new Configuration({
-    apiKey: process.env.NEXT_PUBLIC_GPT_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
-  const response = await openai.createCompletion({
+  // const { Configuration, OpenAIApi } = require("openai");
+  // const configuration = new Configuration({
+  //   apiKey: process.env.NEXT_PUBLIC_GPT_KEY,
+  // });
+
+  const openai = new OpenAI({apiKey:process.env.NEXT_PUBLIC_GPT_KEY});
+
+  const response = await openai.completions.create({
     model: "text-davinci-003",
     prompt:
       "Heres text from a drug label: " +
@@ -69,7 +72,7 @@ export default async function handler(req, res) {
     temperature: 0.1,
   });
 
-  var output = response.data["choices"][0]["text"];
+  var output = response["choices"][0]["text"];
 
   res.setHeader(
     "Cache-Control",
