@@ -149,9 +149,9 @@ export default function App({ Component, pageProps }) {
     <div className="bg_thatblack	w-full p-0 ">
       {/* <Analytics /> */}
       <Head>
-        <title>Sunny Jayaram</title>
-        <meta name="description" content="Sunny Jayaram's Webside " />
-        <link rel="icon" href="IMG_8285 2-modified (1).png" />
+        <title>OpenRx</title>
+        <meta name="description" content="AI powered medication management" />
+        <link rel="icon" href="logo_small-modified.png" />
       </Head>
       <Navbar
         db={db}
