@@ -2,6 +2,7 @@ import OpenAI from "openai";
 export default async function handler(req, res) {
   const async = require("async");
   const sleep = require("util").promisify(setTimeout);
+  console.log(process.env.NEXT_PUBLIC_AZURE_KEY, process.env.NEXT_PUBLIC_AZURE_ENDPOINT);
   const ComputerVisionClient =
     require("@azure/cognitiveservices-computervision").ComputerVisionClient;
   const ApiKeyCredentials = require("@azure/ms-rest-js").ApiKeyCredentials;
