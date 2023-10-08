@@ -1,3 +1,5 @@
+WINNER OF BEST NEW TECHNOLOGY HACK AT CRUZHACKS 2023 (UC Santa Cruz's largest hackathon)
+
 Live at [https://openrx.vercel.app/](https://openrx.vercel.app/)
 With just a quick photo of the bottle label, OpenRx utilizes Azure OCR and GPT API to accurately parse and manage the medication information, and Twilio to send timely reminders.
 
